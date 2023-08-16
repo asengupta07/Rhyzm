@@ -71,20 +71,31 @@ def register():
         pw = request.form.get("password")
         cpw = request.form.get("confirmation")
         uns = db.execute("SELECT username FROM users")
+
+        # Check if username is available
         for un in uns:
             if un["username"] == name:
                 return render_template(
                     "register.html", message="Username is not available!"
                 )
+
+        # Check if password matches confirmation
         if pw != cpw:
             return render_template(
                 "register.html", message="Password and Confirmation do not match!"
             )
+
+        # Generate password hash
         h = generate_password_hash(pw)
+
+        # Insert new user data into database
         db.execute(
             "INSERT INTO users(username, hash, downloads) VALUES (?, ?, 0)", name, h
         )
+
+        # Redirect to login screen
         return redirect("/login")
+
     if request.method == "GET":
         return render_template("register.html")
 
@@ -103,7 +114,10 @@ def logout():
 @app.route("/")
 @login_required
 def index():
+    # Get global top tracks in a list of dicts
     top = get_top()
+
+    # Render index template
     return render_template("index.html", top=top, enumerate=enumerate)
 
 
@@ -112,10 +126,16 @@ def index():
 def search():
     if request.method == "GET":
         return render_template("search.html")
-    if request.method == "POST":
+
+    else:
+        # Get query and required number of results from form
         query = request.form.get("query")
         N = request.form.get("n")
+
+        # Get search results
         tracks = get_tracks(query=query, N=N)
+
+        # Render search results
         return render_template("search.html", tracks=tracks, enumerate=enumerate)
 
 
@@ -123,52 +143,58 @@ def search():
 @login_required
 def download():
     if request.method == "POST":
+        # Get download information from form
         name = request.form.get("name")
         artists = request.form.get("artists")
-        title = f'{name} - {artists}'
+        title = f"{name} - {artists}"
         image = request.form.get("image")
-        url = get_url(f"{name} {artists} Lyrics")
         album = request.form.get("album")
-        
+
+        # Get youtube url
+        url = get_url(f"{name} {artists} Lyrics")
+
         # Create a temporary directory to store downloaded files
         dir = "downloads"
         os.makedirs(dir, exist_ok=True)
-        
-        # Download the file using the download function
+
+        # Download the file using the download_audio function
         download_audio(url=url, title=title, path=dir)
-        
+
         # Get the downloaded file path
         path = os.path.join(dir, f"{title}.mp4")
-        
-        # Send the file to the user's browser for download
+
         # Open the MP4 file
         mp4 = MP4(path)
-        
+
         # Add metadata
-        mp4['\xa9nam'] = name  # Title of the song
-        mp4['\xa9ART'] = artists  # Artist name
-        mp4['\xa9alb'] = album  # Album name
-        
+        mp4["\xa9nam"] = name  # Title of the song
+        mp4["\xa9ART"] = artists  # Artist name
+        mp4["\xa9alb"] = album  # Album name
+
         response = requests.get(image)
         cover_data = response.content
-        
+
         # Set the downloaded cover image as the cover art
-        mp4["covr"] = [
-            MP4Cover(cover_data, imageformat=MP4Cover.FORMAT_JPEG)
-        ]
-        
+        mp4["covr"] = [MP4Cover(cover_data, imageformat=MP4Cover.FORMAT_JPEG)]
+
         # Save the changes
         mp4.save()
+
+        # Send the file to the user's browser for download
         response = send_file(path, as_attachment=True)
-        
+
         # Delete the downloaded file from the server
         os.remove(path)
+
+        # Check if user has downloaded the song before
         check = db.execute(
             "SELECT number FROM downloads WHERE user_id = ? AND image = ? AND title = ?",
             session["user_id"],
             image,
-            name
+            name,
         )
+
+        # Modify downloads table in database accordingly
         if len(check) != 1:
             db.execute(
                 "INSERT INTO downloads(user_id, title, artists, image, album, number) VALUES (?,?,?,?,?,?)",
@@ -177,36 +203,42 @@ def download():
                 artists,
                 image,
                 album,
-                1
+                1,
             )
         else:
             db.execute(
                 "UPDATE downloads SET number = ? WHERE image = ? AND user_id = ?",
                 (check[0]["number"] + 1),
                 image,
-                session["user_id"]
+                session["user_id"],
             )
+
+        # Modify users table in database
         n = db.execute("SELECT downloads FROM users WHERE id = ?", session["user_id"])
         db.execute(
             "UPDATE users SET downloads = ? WHERE id = ?",
             (n[0]["downloads"] + 1),
-            session["user_id"]
+            session["user_id"],
         )
-      
-        
+
         return response
 
 
 @app.route("/history")
 @login_required
 def history():
+    # Get history
     history = db.execute(
         "SELECT title, artists, image, album, number FROM downloads WHERE user_id = ?",
         session["user_id"],
     )
+
+    # Get total number of downloads for the user
     total = db.execute("SELECT downloads FROM users WHERE id = ?", session["user_id"])[
         0
     ]["downloads"]
+
+    # Render history
     return render_template(
         "history.html", history=history, total=total, reversed=reversed
     )
