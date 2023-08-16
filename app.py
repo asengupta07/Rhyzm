@@ -3,6 +3,7 @@ import os
 from flask import Flask, redirect, render_template, request, session, send_file
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from mutagen.mp4 import MP4, MP4Cover
 from project import login_required, get_top, get_tracks, download_audio, get_url
 
 app = Flask(__name__)
@@ -123,34 +124,49 @@ def download():
     if request.method == "POST":
         name = request.form.get("name")
         artists = request.form.get("artists")
-        title = f"{name} - {artists}"
+        title = f'{name} - {artists}'
         image = request.form.get("image")
         url = get_url(f"{name} {artists} Lyrics")
         album = request.form.get("album")
-
+        
         # Create a temporary directory to store downloaded files
         dir = "downloads"
         os.makedirs(dir, exist_ok=True)
-
+        
         # Download the file using the download function
         download_audio(url=url, title=title, path=dir)
-
+        
         # Get the downloaded file path
         path = os.path.join(dir, f"{title}.mp4")
-
+        
         # Send the file to the user's browser for download
+        # Open the MP4 file
+        mp4 = MP4(path)
+        
+        # Add metadata
+        mp4['\xa9nam'] = name  # Title of the song
+        mp4['\xa9ART'] = artists  # Artist name
+        mp4['\xa9alb'] = album  # Album name
+        
+        response = requests.get(image)
+        cover_data = response.content
+        
+        # Set the downloaded cover image as the cover art
+        mp4["covr"] = [
+            MP4Cover(cover_data, imageformat=MP4Cover.FORMAT_JPEG)
+        ]
+        
+        # Save the changes
+        mp4.save()
         response = send_file(path, as_attachment=True)
-
+        
         # Delete the downloaded file from the server
         os.remove(path)
-        print(
-            f"name = {name}, artists={artists}, image={image}, album={album}, url={url}"
-        )
         check = db.execute(
             "SELECT number FROM downloads WHERE user_id = ? AND image = ? AND title = ?",
             session["user_id"],
             image,
-            name,
+            name
         )
         if len(check) != 1:
             db.execute(
@@ -160,22 +176,23 @@ def download():
                 artists,
                 image,
                 album,
-                1,
+                1
             )
         else:
             db.execute(
                 "UPDATE downloads SET number = ? WHERE image = ? AND user_id = ?",
                 (check[0]["number"] + 1),
                 image,
-                session["user_id"],
+                session["user_id"]
             )
         n = db.execute("SELECT downloads FROM users WHERE id = ?", session["user_id"])
         db.execute(
             "UPDATE users SET downloads = ? WHERE id = ?",
             (n[0]["downloads"] + 1),
-            session["user_id"],
+            session["user_id"]
         )
-
+      
+        
         return response
 
 

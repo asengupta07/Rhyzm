@@ -4,6 +4,7 @@ cs50==9.2.5
 Flask==2.3.2
 Flask-Session==0.5.0
 inflect==7.0.0
+mutagen==1.46.0
 pytest==7.4.0
 python-dotenv==1.0.0
 pytube==15.0.0
