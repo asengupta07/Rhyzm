@@ -1,5 +1,5 @@
 # RHYZM
-## Video Demo:  <URL HERE>
+<!-- ## Video Demo:  <URL HERE> -->
 ## Description:
 Rhyzm is a responsive music downloader web application that is built using python on top of Flask and Jinja framework. The music data is provided by Spotify API and the song is downloaded using Pytube python library with the help of Youtube Data API.
 
@@ -63,4 +63,7 @@ This is a very important file that you must create on your own that contains You
     API_KEY = '["<api-key>", ...]'
     CLIENT_ID = "<client id>"
     CLIENT_SECRET = "<client secret>"
-Note: API_KEY should always be a list, even if it is a single key.
+***P.S: API_KEY should always be a list, even if it is a single key.***
+
+## Note:
+I do not own or claim to own any data, information, media and/or intellectual property that is presented, distributed and/or used in this project. All of this aforementioned data is used in this project non-commercially and strictly for research/educational purposes.
