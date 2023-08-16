@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}: Search
+{% endblock %}
+
+{% block main %}
+<h2 class="heading">Search for songs:</h2>
+<br>
+<form action="/search" method="post">
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="query" placeholder="Search Term" type="text" required>
+    </div>
+    <div class="mb-3">
+        <input autocomplete="off" class="form-control mx-auto w-auto" name="n" placeholder="Number of Results" min="1" type="number" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
+{% if tracks %}
+<br>
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th class="d-none d-md-table-cell text-start"></th>
+            <th class="d-none d-md-table-cell text-start"></th>
+            <th class="text-center">SONG</th>
+            <th class="text-center">ARTISTS</th>
+            <th class="d-none d-md-table-cell text-center">ALBUM</th>
+            <th class="text-end"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i, track in enumerate(tracks) %}
+    <tr class="align-items-center">
+        <td class="d-none d-md-table-cell text-start" style="padding:20px;">
+            <h1>#{{ i + 1}}</h1>
+        </td>
+        <td class="d-none d-md-table-cell text-start" style="padding:20px;">
+            <img src="{{ track.image }}" class="rounded float-start" alt="AlbumArt" width="100" height="100">
+        </td>
+        <td class="text-center" style="padding:20px;">
+            <br><b>{{ track.track }}</b>
+        </td>
+        <td class="text-center" style="padding:20px;">
+            <br>{{ track.artists }}
+        </td>
+        <td class="d-none d-md-table-cell text-center" style="padding:20px;">
+            <br>{{ track.album }}
+        </td>
+        <td class="text-center" style="padding:20px;">
+            <br>
+            <form action="/download" method="post">
+                <input class="form-control" name="name" value="{{ track.track }}" type="hidden">
+                <input class="form-control" name="artists" value="{{ track.artists }}" type="hidden">
+                <input class="form-control" name="album" value="{{ track.album }}" type="hidden">
+                <input class="form-control" name="image" value="{{ track.image }}" type="hidden">
+                <button class="btn btn-primary" type="submit">Download</button>
+            </form>
+        </td>
+        </tr>
+    {% endfor %}
+</tbody>
+{% endif %}
+{% endblock %}

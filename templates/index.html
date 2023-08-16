@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}: Home
+{% endblock %}
+
+{% block main %}
+<h1 class="heading">Global Top Tracks:</h1>
+<br>
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th class="d-none d-md-table-cell text-start"></th>
+            <th class="d-none d-md-table-cell text-start"></th>
+            <th class="text-center">SONG</th>
+            <th class="text-center">ARTISTS</th>
+            <th class="text-center">ALBUM</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i, song in enumerate(top) %}
+        <tr class="align-items-center">
+            <td class="d-none d-md-table-cell text-start" style="padding:20px;">
+                <h1>#{{ i + 1}}</h1>
+            </td>
+            <td class="d-none d-md-table-cell text-start" style="padding:20px;">
+                <img src="{{ song.image }}" class="img-thumbnail img-fluid float-start" alt="AlbumArt" width="120" height="120">
+            </td>
+            <td class="text-center" style="padding:20px;">
+                <br><b>{{ song.track }}</b>
+            </td>
+            <td class="text-center" style="padding:20px;">
+                <br>{{ song.artists }}
+            </td>
+            <td class="text-center" style="padding:20px;">
+                <br>{{ song.album }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

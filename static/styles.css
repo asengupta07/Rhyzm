@@ -1,0 +1,59 @@
+@font-face {
+    font-family: 'againstregular';
+    src: url('against_regular-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'rovey';
+    src: url('rovey-regular-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'vonder_cleanregular';
+    src: url('vonder-clean-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'morqueenregular';
+    src: url('morqueen-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.footer {
+    font-family: 'morqueenregular';
+}
+
+thead {
+    font-family: 'rovey';
+}
+
+table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.heading {
+    font-family: 'vonder_cleanregular';
+}
+
+.app-name {
+    font-family: 'againstregular';
+}
+
+.navbar {
+    width: 100%;
+}
+table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+@media (max-width: 720px) {
+    body {
+          font-size: 0.7rem;
+      }
+  }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en" data-bs-theme="dark">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+
+        <!-- http://getbootstrap.com/docs/5.3/ -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+        <link href="/static/favicon.ico" rel="icon">
+
+        <link href="/static/styles.css" rel="stylesheet">
+
+        <title>Rhyzm{% block title %}{% endblock %}</title>
+
+    </head>
+
+    <body>
+
+        <nav class="border navbar sticky-top navbar-expand-md" style="background-color: #5c3ef0;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <h2 class="app-name">
+                        <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+                        Rhyzm
+                    </h2>
+                </a>
+                <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar">
+                    {% if session["user_id"] %}
+                        <ul class="navbar-nav me-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/search"><h6>Search</h6></a></li>
+                            <li class="nav-item"><a class="nav-link" href="/history"><h6>Download History</h6></a></li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <!-- <li class="nav-item"><a class="nav-link" href="/changepw"><h3>Change Password</h3></a></li> -->
+                            <li class="nav-item"><a class="nav-link" href="/logout"><h6>Log Out</h6></a></li>
+                        </ul>
+                    {% else %}
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/register"><h6>Register</h6></a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login"><h6>Log In</h6></a></li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        {% if message %}
+            <header>
+                <div class="alert alert-primary mb-0 text-center" role="alert">
+                    {{ message }}
+                </div>
+            </header>
+        {% endif %}
+
+        <main class="container-fluid py-5 text-center">
+            {% block main %}{% endblock %}
+        </main>
+
+        <footer class="mb-5 small text-center text-muted">
+            <span class="footer">
+            Data provided by Spotify API<br>
+            Music provided by YouTube
+            </span>
+        </footer>
+
+    </body>
+
+</html>
