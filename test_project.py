@@ -1,5 +1,5 @@
 import pytest
-from project import list_artists, make_url, get_top
+from project import list_artists, make_url, get_top, get_tracks, get_headers
 
 
 def test_list_artists():
@@ -33,3 +33,17 @@ def test_get_top():
         assert "album" in item
         assert "image" in item
         assert "artists" in item
+
+
+def test_get_tracks():
+    tracks = get_tracks(query="Hello", N="5")
+    for item in tracks:
+        assert "track" in item
+        assert "album" in item
+        assert "image" in item
+        assert "artists" in item
+
+
+def test_get_headers():
+    headers = get_headers()
+    assert "Authorization" in headers
