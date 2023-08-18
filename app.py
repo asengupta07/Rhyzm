@@ -6,6 +6,20 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from mutagen.mp4 import MP4, MP4Cover
 from project import login_required, get_top, get_tracks, download_audio, get_url
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://9399f435143ad0d65bf4f6e91e3670a5@o4505726531338240.ingest.sentry.io/4505726541168640",
+    integrations=[
+        FlaskIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
 
 app = Flask(__name__)
 
