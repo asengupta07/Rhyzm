@@ -3,6 +3,9 @@
 ## Description:
 Rhyzm is a responsive music downloader web application that is built using python on top of Flask and Jinja framework. The music data is provided by Spotify API and the song is downloaded using Pytube python library with the help of Youtube Data API.
 
+## Sample:
+You may try out a pre-deployed version of the web application at [Rhyzm](https://rhyzm.arnabsengupta.repl.co). Please note that this version is deployed on a development server and is not built for extensive use. Its purpose is experimental/ educational use only.
+
 ## Usage:
 First, you should install all required libraries for this application to run bt executing the following command in the terminal:
 
